@@ -9,7 +9,7 @@ namespace TrainTrain.Domain
     public class Train : ValueType<Train>
     {
         private readonly Dictionary<string, Coach> _coaches;
-        private TrainId TrainId { get; }
+        public TrainId Id { get; }
 
         public IReadOnlyDictionary<string, Coach> Coaches => _coaches;
 
@@ -24,9 +24,9 @@ namespace TrainTrain.Domain
         }
 
 
-        public Train(TrainId trainId, Dictionary<string, Coach> coaches)
+        public Train(TrainId id, Dictionary<string, Coach> coaches)
         {
-            TrainId = trainId;
+            Id = id;
             _coaches = coaches;
         }
 
@@ -40,38 +40,33 @@ namespace TrainTrain.Domain
         {
             var attemptInTheSameCoach = BuildReservationAttemptInTheSameCoach(seatsRequested);
 
-            if (attemptInTheSameCoach.IsFulFilled)
-            {
-                return attemptInTheSameCoach;
-            }
+            if (attemptInTheSameCoach.IsFulFilled) return attemptInTheSameCoach;
 
             return BuildReservationAttemptForOverallTrainCapacity(seatsRequested);
         }
 
         private ReservationAttempt BuildReservationAttemptForOverallTrainCapacity(SeatsRequested seatsRequested)
         {
-            return new ReservationAttempt(TrainId, seatsRequested, Seats
+            return new ReservationAttempt(Id, seatsRequested, Seats
                 .Where(s => s.IsAvailable()).Take(seatsRequested.Count));
         }
 
         private ReservationAttempt BuildReservationAttemptInTheSameCoach(SeatsRequested seatsRequested)
         {
             foreach (var coach in Coaches.Values)
-            {
                 if (coach.DoesNotExceedOverallCapacity(seatsRequested))
                 {
-                    var reservationAttempt = coach.BuildReservationAttempt(TrainId, seatsRequested);
+                    var reservationAttempt = coach.BuildReservationAttempt(Id, seatsRequested);
 
                     if (reservationAttempt.IsFulFilled) return reservationAttempt;
                 }
-            }
 
-            return new ReservationAttemptFailure(TrainId, seatsRequested);
+            return new ReservationAttemptFailure(Id, seatsRequested);
         }
 
         protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
-            return new object[] {TrainId, new DictionaryByValue<string, Coach>(_coaches)};
+            return new object[] {Id, new DictionaryByValue<string, Coach>(_coaches)};
         }
     }
 }

@@ -16,10 +16,7 @@ namespace TrainTrain.Domain
             {
                 var tokens = id.Split("-");
 
-                if (tokens[0].Length == 4)
-                {
-                    TrainNumber = tokens[0];
-                }
+                if (tokens[0].Length == 4) TrainNumber = tokens[0];
 
                 Date = new DateTime(int.Parse(tokens[1]), int.Parse(tokens[2]), int.Parse(tokens[3]));
             }

@@ -13,8 +13,9 @@ namespace TrainTrain.Test.Acceptance
         private readonly TrainId _trainId = new TrainId("9043-2019-03-13");
         private readonly BookingReference _bookingReference = new BookingReference("341RTFA");
 
+
         [Test]
-        public void Reserve_seats_when_train_is_empty()
+        public async Task Reserve_seats_when_train_is_empty()
         {
             var seatsRequestedCount = new SeatsRequested(3);
 
@@ -23,8 +24,9 @@ namespace TrainTrain.Test.Acceptance
             var provideReservation = BuildMakeReservation(_trainId, _bookingReference, new Seat("A", 1), new Seat("A", 2), new Seat("A", 3));
 
             IProvideTicket ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
+
             var seatsReservationAdapter = new SeatsReservationAdapter(ticketOffice);
-            var jsonReservation = seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count).Result;
+            var jsonReservation =  await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count);
 
             Check.That(jsonReservation)
                 .IsEqualTo(
@@ -32,7 +34,7 @@ namespace TrainTrain.Test.Acceptance
         }
 
         [Test]
-        public void Not_reserve_seats_when_it_exceed_max_capacity_threshold()
+        public async Task Not_reserve_seats_when_it_exceed_max_capacity_threshold()
         {
             var seatsRequestedCount = new SeatsRequested(3);
 
@@ -43,14 +45,14 @@ namespace TrainTrain.Test.Acceptance
 
 
             var ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
-            var reservation = ticketOffice.Reserve(_trainId, seatsRequestedCount).Result;
+            var reservation = await ticketOffice.Reserve(_trainId, seatsRequestedCount);
 
             Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
                 .IsEqualTo($"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"\", \"seats\": []}}");
         }
 
         [Test]
-        public void Reserve_all_seats_in_the_same_coach()
+        public async Task Reserve_all_seats_in_the_same_coach()
         {
             var seatsRequestedCount = new SeatsRequested(2);
 
@@ -62,15 +64,16 @@ namespace TrainTrain.Test.Acceptance
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
 
             var ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
-            var reservation = ticketOffice.Reserve(_trainId, seatsRequestedCount).Result;
+            var reservation = await ticketOffice.Reserve(_trainId, seatsRequestedCount);
 
             Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
                 .IsEqualTo(
                     $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": [\"1B\", \"2B\"]}}");
         }
 
+
         [Test]
-        public void Reserve_at_least_seats_in_several_coaches()
+        public async Task Reserve_at_least_seats_in_several_coaches()
         {
             var seatsRequestedCount = new SeatsRequested(6);
 
@@ -82,7 +85,7 @@ namespace TrainTrain.Test.Acceptance
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
 
             var ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
-            var reservation = ticketOffice.Reserve(_trainId, seatsRequestedCount).Result;
+            var reservation = await ticketOffice.Reserve(_trainId, seatsRequestedCount);
 
             Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
                 .IsEqualTo(

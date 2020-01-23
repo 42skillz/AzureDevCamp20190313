@@ -16,9 +16,7 @@ namespace TrainTrain.Domain
         public BookingReference(string id)
         {
             if (!string.IsNullOrEmpty(id) && id.Length > MaxLength)
-            {
                 throw new ArgumentException($"{nameof(id)} length should less than {MaxLength}");
-            }
 
             Id = id;
         }

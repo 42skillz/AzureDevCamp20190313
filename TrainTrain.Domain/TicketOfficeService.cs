@@ -19,14 +19,17 @@ namespace TrainTrain.Domain
 
                 if (reservationAttempt.IsFulFilled)
                 {
-                    var bookingReference = await _provideBookingReference.GetBookingReference();
-
                     return await _provideReservation.BookSeats(
-                        reservationAttempt.AssignBookingReference(bookingReference));
+                        reservationAttempt.AssignBookingReference(await _provideBookingReference
+                            .GetBookingReference()));
                 }
             }
 
             return new ReservationFailure(trainId);
+        }
+
+        public TicketOfficeService()
+        {
         }
 
         public TicketOfficeService(IProvideTrainTopology provideTrainTopology, IProvideReservation provideReservation,
@@ -35,6 +38,18 @@ namespace TrainTrain.Domain
             _provideTrainTopology = provideTrainTopology;
             _provideReservation = provideReservation;
             _provideBookingReference = provideBookingReference;
+        }
+
+        public Maybe<ReservationAttempt> TryReserve(Train train, SeatsRequested seatsRequested,
+            BookingReference bookingReference)
+        {
+            if (!train.DoesNotExceedOverallCapacity(seatsRequested)) return new Maybe<ReservationAttempt>();
+
+            var reservationAttempt = train.BuildReservationAttempt(seatsRequested);
+
+            return reservationAttempt.IsFulFilled
+                ? new Maybe<ReservationAttempt>(reservationAttempt.AssignBookingReference(bookingReference))
+                : new Maybe<ReservationAttempt>();
         }
     }
 }
