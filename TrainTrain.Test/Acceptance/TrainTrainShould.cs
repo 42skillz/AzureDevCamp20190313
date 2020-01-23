@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NFluent;
 using NSubstitute;
 using NUnit.Framework;
@@ -18,19 +19,22 @@ namespace TrainTrain.Test.Acceptance
         public async Task Reserve_seats_when_train_is_empty()
         {
             var seatsRequestedCount = new SeatsRequested(3);
+            
+            var seatsExpected = new List<Seat> {new Seat("A", 1), new Seat("A", 2), new Seat("A", 3) };
 
             var provideTrainTopology = BuildTrainTopology(_trainId, TrainTopologyGenerator.With_10_available_seats());
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
-            var provideReservation = BuildMakeReservation(_trainId, _bookingReference, new Seat("A", 1), new Seat("A", 2), new Seat("A", 3));
+            var provideReservation = BuildMakeReservation(_trainId, _bookingReference, seatsExpected.ToArray());
 
+            // Hexagon
             IProvideTicket ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
 
-            var seatsReservationAdapter = new SeatsReservationAdapter(ticketOffice);
+            var seatsReservationAdapter = new ReservationAdapter(ticketOffice);
             var jsonReservation =  await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count);
 
             Check.That(jsonReservation)
                 .IsEqualTo(
-                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
+                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
         }
 
         [Test]
@@ -43,11 +47,12 @@ namespace TrainTrain.Test.Acceptance
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
             var provideReservation = BuildMakeReservation(_trainId, _bookingReference);
 
-
+            // hexagon
             var ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
-            var reservation = await ticketOffice.Reserve(_trainId, seatsRequestedCount);
+            
+            var seatsReservationAdapter = new ReservationAdapter(ticketOffice);
 
-            Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
+            Check.That(await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count))
                 .IsEqualTo($"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"\", \"seats\": []}}");
         }
 
@@ -56,40 +61,52 @@ namespace TrainTrain.Test.Acceptance
         {
             var seatsRequestedCount = new SeatsRequested(2);
 
+            var seatsExpected = new List<Seat> { new Seat("B", 1), new Seat("B", 2) };
+
             var provideTrainTopology = BuildTrainTopology(_trainId,
                 TrainTopologyGenerator.With_2_coaches_and_9_seats_already_reserved_in_the_first_coach());
 
-            var provideReservation = BuildMakeReservation(_trainId, _bookingReference, new Seat("B", 1), new Seat("B", 2));
+            var provideReservation = BuildMakeReservation(_trainId, _bookingReference, seatsExpected.ToArray());
 
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
 
+            // hexagon
             var ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
-            var reservation = await ticketOffice.Reserve(_trainId, seatsRequestedCount);
+            
+            var seatsReservationAdapter = new ReservationAdapter(ticketOffice);
 
-            Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
+            Check.That(await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count))
                 .IsEqualTo(
-                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": [\"1B\", \"2B\"]}}");
+                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
         }
 
 
         [Test]
         public async Task Reserve_at_least_seats_in_several_coaches()
         {
+            var seatsExpected = new List<Seat>
+            {
+                new Seat("A", 7), new Seat("A", 8), new Seat("A", 9), new Seat("A", 10), 
+                new Seat("B", 5), new Seat("B", 6)
+            };
+
             var seatsRequestedCount = new SeatsRequested(6);
 
             var provideTrainTopology = BuildTrainTopology(_trainId,
                 TrainTopologyGenerator.With_3_coaches_and_6_then_4_seats_already_reserved());
 
-            var provideReservation = BuildMakeReservation(_trainId, _bookingReference, new Seat("A", 7), new Seat("A", 8), new Seat("A", 9), new Seat("A", 10), new Seat("B", 5), new Seat("B", 6));
+            var provideReservation = BuildMakeReservation(_trainId, _bookingReference, seatsExpected.ToArray());
 
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
 
+            // hexagon
             var ticketOffice = new TicketOfficeService(provideTrainTopology, provideReservation, bookingReferenceService);
-            var reservation = await ticketOffice.Reserve(_trainId, seatsRequestedCount);
+            
+            var seatsReservationAdapter = new ReservationAdapter(ticketOffice);
 
-            Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
+            Check.That(await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count))
                 .IsEqualTo(
-                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": [\"7A\", \"8A\", \"9A\", \"10A\", \"5B\", \"6B\"]}}");
+                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
         }
 
         private static IProvideBookingReference BuildBookingReferenceService(BookingReference bookingReference)

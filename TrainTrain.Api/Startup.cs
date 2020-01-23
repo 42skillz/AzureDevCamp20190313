@@ -22,7 +22,7 @@ namespace TrainTrain.Api
                 trainDataServiceAdapter, 
                 bookingReferenceServiceAdapter);
 
-            var seatsReservationAdapter = new SeatsReservationAdapter(ticketOffice);
+            var seatsReservationAdapter = new ReservationAdapter(ticketOffice);
             services.AddSingleton(seatsReservationAdapter);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
