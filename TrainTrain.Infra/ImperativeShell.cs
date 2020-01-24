@@ -19,7 +19,8 @@ namespace TrainTrain.Infra
             var trainId = new TrainId(trainNumber);
 
             // Call functional core architecture
-            var reservation = await TicketOfficeService.TryReserve(await provideTrainTopology.GetTrain(trainId),
+            var reservation = await TicketOfficeService.TryReserve(
+                    await provideTrainTopology.GetTrain(trainId),
                     seatsRequested,
                     await provideBookingReference.GetBookingReference())
                 // Imperative shell

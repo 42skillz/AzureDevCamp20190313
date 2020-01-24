@@ -19,7 +19,7 @@ namespace TrainTrain.Test.Acceptance
         {
             var seatsRequestedCount = new SeatsRequested(3);
             
-            var seatsExpected = new List<Seat> {new Seat("A", 1), new Seat("A", 2), new Seat("A", 3) };
+            var seatsExpected = new List<Seat> { new Seat("A", 1), new Seat("A", 2), new Seat("A", 3) };
 
             var provideTrainTopology = BuildTrainTopologyProvider(_trainId, TrainTopologyGenerator.With_10_available_seats());
             var provideBookingReference = BuildBookingReferenceProvider(_bookingReference);

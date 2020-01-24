@@ -50,6 +50,5 @@ namespace TrainTrain.Domain
         private readonly IProvideBookingReference _provideBookingReference;
         private readonly IProvideReservation _provideReservation;
         private readonly IProvideTrainTopology _provideTrainTopology;
-
     }
 }

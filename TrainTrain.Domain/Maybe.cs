@@ -5,7 +5,7 @@ namespace TrainTrain.Domain
     public sealed class Maybe<T>
     {
         internal bool HasItem { get; }
-        public T Item { get; }
+        internal T Item { get; }
 
         public Maybe()
         {
