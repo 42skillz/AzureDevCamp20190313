@@ -144,10 +144,10 @@ namespace TrainTrain.Test.Acceptance
             return trainDataService;
         }
 
-        private static IProvideReservation 
+        private static IProvideBookedSeats 
             BuildReservation(TrainId trainId, BookingReference bookingReference, params Seat[] seats)
         {
-            var trainDataService = Substitute.For<IProvideReservation>();
+            var trainDataService = Substitute.For<IProvideBookedSeats>();
 
             trainDataService.BookSeats(Arg.Any<ReservationAttempt>())
                 .Returns(Task.FromResult(new Reservation(trainId, bookingReference, seats)));
@@ -155,7 +155,7 @@ namespace TrainTrain.Test.Acceptance
             return trainDataService;
         }
 
-        private (IProvideTrainTopology, IProvideBookingReference, IProvideReservation) 
+        private (IProvideTrainTopology, IProvideBookingReference, IProvideBookedSeats) 
             BuildInputAdapters(string trainTopology, string trainNumber, string bookingRef, params Seat[] seats)
         {
             var trainId = new TrainId(trainNumber);

@@ -10,7 +10,7 @@ namespace TrainTrain.Infra
         public static async Task<string> ReserveSeat(
             IProvideTrainTopology provideTrainTopology,
             IProvideBookingReference provideBookingReference, 
-            IProvideReservation provideReservation,
+            IProvideBookedSeats provideBookedSeats,
             string trainNumber, 
             int seatsRequestedCount)
         {
@@ -19,12 +19,11 @@ namespace TrainTrain.Infra
             var trainId = new TrainId(trainNumber);
 
             // Call functional core architecture
-            var reservation = await TicketOfficeService.TryReserve(
+            var reservation = await TicketsOfficeService.TryReserve(
                     await provideTrainTopology.GetTrain(trainId),
                     seatsRequested,
                     await provideBookingReference.GetBookingReference())
-                // Imperative shell
-                .Select(async reservationAttempt => await provideReservation.BookSeats(reservationAttempt))
+                .Select(async reservationAttempt => await provideBookedSeats.BookSeats(reservationAttempt))
                 .GetValueOrFallback(Task.FromResult(new Reservation(trainId)));
             
             // Adapt from domain to infra

@@ -93,9 +93,7 @@ namespace TrainTrain.Test.Acceptance
                    "\"8C\": {\"booking_reference\": \"\", \"seat_number\": \"8\", \"coach\": \"C\"}, " +
                    "\"9C\": {\"booking_reference\": \"\", \"seat_number\": \"9\", \"coach\": \"C\"}, " +
                    "\"10C\": {\"booking_reference\": \"\", \"seat_number\": \"10\", \"coach\": \"C\"}," +
-
                    "}}";
-
         }
     }
 }

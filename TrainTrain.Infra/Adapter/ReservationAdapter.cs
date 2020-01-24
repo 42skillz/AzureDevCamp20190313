@@ -7,16 +7,16 @@ namespace TrainTrain.Infra.Adapter
 {
     public class ReservationAdapter
     {
-        private readonly IProvideTicket _ticketOffice;
+        private readonly IProvideTickets _ticketsOffice;
 
-        public ReservationAdapter(IProvideTicket ticketOffice)
+        public ReservationAdapter(IProvideTickets ticketsOffice)
         {
-            _ticketOffice = ticketOffice;
+            _ticketsOffice = ticketsOffice;
         }
 
         public async Task<string> ReserveAsync(string trainId, int seatsRequestedCount)
         {
-            return AdaptReservation(await _ticketOffice.Reserve(new TrainId(trainId), new SeatsRequested(seatsRequestedCount)));
+            return AdaptReservation(await _ticketsOffice.Reserve(new TrainId(trainId), new SeatsRequested(seatsRequestedCount)));
         }
 
         public static string AdaptReservation(Reservation reservation)

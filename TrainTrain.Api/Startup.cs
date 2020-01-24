@@ -18,7 +18,7 @@ namespace TrainTrain.Api
             var trainDataServiceAdapter = new TrainDataServiceAdapter(UriTrainDataService);
             var bookingReferenceServiceAdapter = new BookingReferenceServiceAdapter(UriBookingReferenceService);
 
-            var ticketOffice = new TicketOfficeService(
+            var ticketOffice = new TicketsOfficeService(
                 trainDataServiceAdapter,
                 trainDataServiceAdapter, 
                 bookingReferenceServiceAdapter);
