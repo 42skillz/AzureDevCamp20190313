@@ -5,36 +5,37 @@ using NSubstitute;
 using NUnit.Framework;
 using TrainTrain.Domain;
 using TrainTrain.Domain.Port;
+using TrainTrain.Infra;
 using TrainTrain.Infra.Adapter;
 
 namespace TrainTrain.Test.Acceptance
 {
     public class TrainTrainFunctionalCoreShould
     {
-        private readonly BookingReference _bookingReference = new BookingReference("341RTFA");
-        private readonly TrainId _trainId = new TrainId("9043-2019-03-13");
-
         [Test]
         public async Task 
             Reserve_seats_when_train_is_empty()
         {
-            // Imperative shell
+            var bookingReference = "341RTFA";
+            var trainNumber = "9043-2019-03-13";
+            var seatsRequestedCount = 3;
+
             var seatsExpected = new List<Seat> { new Seat("A", 1), new Seat("A", 2), new Seat("A", 3) };
-            
+
             var (provideTrainTopology, provideBookingReference, provideReservation) =
-                BuildInputAdapters(TrainTopologyGenerator.With_10_available_seats(), seatsExpected.ToArray());
+                BuildInputAdapters(TrainTopologyGenerator.With_10_available_seats(), trainNumber, bookingReference,  seatsExpected.ToArray());
 
-            var seatsRequested = new SeatsRequested(3);
 
-            // Call functional core architecture
-            var reservation = await TicketOfficeService.TryReserve(await provideTrainTopology.GetTrain(_trainId), seatsRequested, await provideBookingReference.GetBookingReference()) 
-                // Imperative shell
-                .Select(async reservationAttempt => await provideReservation.BookSeats(reservationAttempt))
-                .GetValueOrFallback(Task.FromResult(new Reservation(_trainId)));
+            var reservation = await ImperativeShell.ReserveSeat(
+                provideTrainTopology, 
+                provideBookingReference, 
+                provideReservation, 
+                trainNumber, 
+                seatsRequestedCount);
 
-            Check.That(ReservationAdapter.AdaptReservation(reservation))
+            Check.That(reservation)
                 .IsEqualTo(
-                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
+                    $"{{\"train_id\": \"{trainNumber}\", \"booking_reference\": \"{bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
         }
 
 
@@ -42,21 +43,26 @@ namespace TrainTrain.Test.Acceptance
         public async Task 
             Not_reserve_seats_when_it_exceed_max_capacity_threshold()
         {
-            // Imperative shell
+            var bookingReference = "341RTFA";
+            var trainNumber = "9043-2019-03-13";
+            var seatsRequestedCount = 3;
+
             var (provideTrainTopology, provideBookingReference, provideReservation) =
-                BuildInputAdapters(TrainTopologyGenerator.With_10_seats_and_6_already_reserved());
+                BuildInputAdapters(
+                    TrainTopologyGenerator.With_10_seats_and_6_already_reserved(), 
+                    trainNumber, 
+                    bookingReference);
 
-            var seatsRequested = new SeatsRequested(3);
 
-            // Call functional core architecture
-            var reservation = await TicketOfficeService.TryReserve(await provideTrainTopology.GetTrain(_trainId), seatsRequested,
-                    await provideBookingReference.GetBookingReference())
-                // Imperative shell
-                .Select(async reservationAttempt => await provideReservation.BookSeats(reservationAttempt))
-                .GetValueOrFallback(Task.FromResult(new Reservation(_trainId)));
+            var reservation = await ImperativeShell.ReserveSeat(
+                provideTrainTopology, 
+                provideBookingReference, 
+                provideReservation, 
+                trainNumber, 
+                seatsRequestedCount);
 
-            Check.That(ReservationAdapter.AdaptReservation(reservation))
-                .IsEqualTo($"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"\", \"seats\": []}}");
+            Check.That(reservation)
+                .IsEqualTo($"{{\"train_id\": \"{trainNumber}\", \"booking_reference\": \"\", \"seats\": []}}");
         }
 
 
@@ -64,49 +70,59 @@ namespace TrainTrain.Test.Acceptance
         public async Task 
             Reserve_all_seats_in_the_same_coach()
         {
-            // Imperative shell
+            var bookingReference = "341RTFA";
+            var trainNumber = "9043-2019-03-13";
+            var seatsRequestedCount = 2;
+
             var seatsExpected = new List<Seat> { new Seat("B", 1), new Seat("B", 2) };
 
             var (provideTrainTopology, provideBookingReference, provideReservation) =
-                BuildInputAdapters(TrainTopologyGenerator.With_2_coaches_and_9_seats_already_reserved_in_the_first_coach(), seatsExpected.ToArray());
+                BuildInputAdapters(
+                    TrainTopologyGenerator.With_2_coaches_and_9_seats_already_reserved_in_the_first_coach(),
+                    trainNumber,
+                    bookingReference,
+                    seatsExpected.ToArray());
 
-            var seatsRequested = new SeatsRequested(2);
+            var reservation = await ImperativeShell.ReserveSeat(
+                provideTrainTopology, 
+                provideBookingReference, 
+                provideReservation, 
+                trainNumber, 
+                seatsRequestedCount);
 
-            // Call functional core architecture
-            var reservation = await TicketOfficeService.TryReserve(await provideTrainTopology.GetTrain(_trainId), seatsRequested,
-                    await provideBookingReference.GetBookingReference())
-                // Imperative shell
-                .Select(async reservationAttempt => await provideReservation.BookSeats(reservationAttempt))
-                .GetValueOrFallback(Task.FromResult(new Reservation(_trainId)));
-
-            Check.That(ReservationAdapter.AdaptReservation(reservation))
+            Check.That(reservation)
                 .IsEqualTo(
-                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
+                    $"{{\"train_id\": \"{trainNumber}\", \"booking_reference\": \"{bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
         }
 
         [Test]
         public async Task 
             Reserve_at_least_seats_in_several_coaches()
         {
-            // Imperative shell
+            var bookingReference = "341RTFA";
+            var trainNumber = "9043-2019-03-13";
+            var seatsRequestedCount = 6;
+
             var seatsExpected = new List<Seat> { new Seat("A", 7), new Seat("A", 8), new Seat("A", 9), new Seat("A", 10), 
                                                  new Seat("B", 5), new Seat("B", 6) };
 
             var (provideTrainTopology, provideBookingReference, provideReservation) =
-                BuildInputAdapters(TrainTopologyGenerator.With_3_coaches_and_6_then_4_seats_already_reserved(), seatsExpected.ToArray());
+                BuildInputAdapters(
+                    TrainTopologyGenerator.With_3_coaches_and_6_then_4_seats_already_reserved(),
+                    trainNumber,
+                    bookingReference,
+                    seatsExpected.ToArray());
 
-            var seatsRequested = new SeatsRequested(6);
+            var reservation = await ImperativeShell.ReserveSeat(
+                provideTrainTopology, 
+                provideBookingReference, 
+                provideReservation, 
+                trainNumber, 
+                seatsRequestedCount);
 
-            // Call functional core architecture
-            var reservation = await TicketOfficeService.TryReserve(await provideTrainTopology.GetTrain(_trainId), seatsRequested,
-                    await provideBookingReference.GetBookingReference())
-                // Imperative shell
-                .Select(async reservationAttempt => await provideReservation.BookSeats(reservationAttempt))
-                .GetValueOrFallback(Task.FromResult(new Reservation(_trainId)));
-
-            Check.That(ReservationAdapter.AdaptReservation(reservation))
+            Check.That(reservation)
                 .IsEqualTo(
-                    $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
+                    $"{{\"train_id\": \"{trainNumber}\", \"booking_reference\": \"{bookingReference}\", \"seats\": {ReservationAdapter.AdaptSeats(seatsExpected)}}}");
         }
 
         private static IProvideBookingReference 
@@ -140,12 +156,14 @@ namespace TrainTrain.Test.Acceptance
         }
 
         private (IProvideTrainTopology, IProvideBookingReference, IProvideReservation) 
-            BuildInputAdapters(string trainTopology, params Seat[] seats)
+            BuildInputAdapters(string trainTopology, string trainNumber, string bookingRef, params Seat[] seats)
         {
-            var provideTrainTopology = BuildTrainTopology(_trainId, trainTopology);
-            var provideBookingReference = BuildBookingReferenceService(_bookingReference);
+            var trainId = new TrainId(trainNumber);
+            var bookingReference = new BookingReference(bookingRef);
+            var provideTrainTopology = BuildTrainTopology(trainId, trainTopology);
+            var provideBookingReference = BuildBookingReferenceService(bookingReference);
             var provideReservation =
-                BuildReservation(_trainId, _bookingReference, seats);
+                BuildReservation(trainId, bookingReference, seats);
             return (provideTrainTopology, provideBookingReference, provideReservation);
         }
     }
