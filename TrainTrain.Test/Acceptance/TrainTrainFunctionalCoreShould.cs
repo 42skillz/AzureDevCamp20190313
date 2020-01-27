@@ -26,7 +26,7 @@ namespace TrainTrain.Test.Acceptance
                 BuildInputAdapters(TrainTopologyGenerator.With_10_available_seats(), trainNumber, bookingReference,  seatsExpected.ToArray());
 
 
-            var reservation = await ImperativeShell.ReserveSeat(
+            var reservation = await ImperativeShell.ReserveSeats(
                 provideTrainTopology, 
                 provideBookingReference, 
                 provideReservation, 
@@ -54,7 +54,7 @@ namespace TrainTrain.Test.Acceptance
                     bookingReference);
 
 
-            var reservation = await ImperativeShell.ReserveSeat(
+            var reservation = await ImperativeShell.ReserveSeats(
                 provideTrainTopology, 
                 provideBookingReference, 
                 provideReservation, 
@@ -83,7 +83,7 @@ namespace TrainTrain.Test.Acceptance
                     bookingReference,
                     seatsExpected.ToArray());
 
-            var reservation = await ImperativeShell.ReserveSeat(
+            var reservation = await ImperativeShell.ReserveSeats(
                 provideTrainTopology, 
                 provideBookingReference, 
                 provideReservation, 
@@ -113,7 +113,7 @@ namespace TrainTrain.Test.Acceptance
                     bookingReference,
                     seatsExpected.ToArray());
 
-            var reservation = await ImperativeShell.ReserveSeat(
+            var reservation = await ImperativeShell.ReserveSeats(
                 provideTrainTopology, 
                 provideBookingReference, 
                 provideReservation, 

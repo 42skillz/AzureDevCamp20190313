@@ -7,7 +7,7 @@ namespace TrainTrain.Infra
 {
     public static class ImperativeShell
     {
-        public static async Task<string> ReserveSeat(
+        public static async Task<string> ReserveSeats(
             IProvideTrainTopology provideTrainTopology,
             IProvideBookingReference provideBookingReference, 
             IProvideBookedSeats provideBookedSeats,
