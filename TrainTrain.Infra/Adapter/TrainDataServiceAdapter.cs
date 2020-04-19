@@ -10,7 +10,7 @@ using TrainTrain.Domain.Port;
 
 namespace TrainTrain.Infra.Adapter
 {
-    public class TrainDataServiceAdapter :IProvideTrainTopology, IProvideBookedSeats
+    public class TrainDataServiceAdapter :IProvideTrainTopology, IBookSeats
     {
         private readonly string _uriTrainDataService;
 

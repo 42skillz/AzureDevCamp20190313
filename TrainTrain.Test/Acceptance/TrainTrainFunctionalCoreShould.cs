@@ -16,22 +16,18 @@ namespace TrainTrain.Test.Acceptance
         public async Task 
             Reserve_seats_when_train_is_empty()
         {
-            var bookingReference = "341RTFA";
-            var trainNumber = "9043-2019-03-13";
-            var seatsRequestedCount = 3;
+            const string bookingReference = "341RTA";
+            const string trainNumber = "9043-2019-03-13";
+            const int seatsRequestedCount = 3;
 
             var seatsExpected = new List<Seat> { new Seat("A", 1), new Seat("A", 2), new Seat("A", 3) };
 
             var (provideTrainTopology, provideBookingReference, provideReservation) =
                 BuildInputAdapters(TrainTopologyGenerator.With_10_available_seats(), trainNumber, bookingReference,  seatsExpected.ToArray());
 
-
-            var reservation = await ImperativeShell.ReserveSeats(
-                provideTrainTopology, 
-                provideBookingReference, 
-                provideReservation, 
-                trainNumber, 
-                seatsRequestedCount);
+            // Call imperative Shell
+            var reservation = await TrainReservation
+                .ReserveSeats(trainNumber, seatsRequestedCount, provideTrainTopology, provideBookingReference, provideReservation);
 
             Check.That(reservation)
                 .IsEqualTo(
@@ -43,7 +39,7 @@ namespace TrainTrain.Test.Acceptance
         public async Task 
             Not_reserve_seats_when_it_exceed_max_capacity_threshold()
         {
-            var bookingReference = "341RTFA";
+            var bookingReference = "341RTA";
             var trainNumber = "9043-2019-03-13";
             var seatsRequestedCount = 3;
 
@@ -54,12 +50,8 @@ namespace TrainTrain.Test.Acceptance
                     bookingReference);
 
 
-            var reservation = await ImperativeShell.ReserveSeats(
-                provideTrainTopology, 
-                provideBookingReference, 
-                provideReservation, 
-                trainNumber, 
-                seatsRequestedCount);
+            var reservation = await TrainReservation.ReserveSeats(trainNumber, 
+                seatsRequestedCount, provideTrainTopology, provideBookingReference, provideReservation);
 
             Check.That(reservation)
                 .IsEqualTo($"{{\"train_id\": \"{trainNumber}\", \"booking_reference\": \"\", \"seats\": []}}");
@@ -70,7 +62,7 @@ namespace TrainTrain.Test.Acceptance
         public async Task 
             Reserve_all_seats_in_the_same_coach()
         {
-            var bookingReference = "341RTFA";
+            var bookingReference = "341RTA";
             var trainNumber = "9043-2019-03-13";
             var seatsRequestedCount = 2;
 
@@ -83,12 +75,8 @@ namespace TrainTrain.Test.Acceptance
                     bookingReference,
                     seatsExpected.ToArray());
 
-            var reservation = await ImperativeShell.ReserveSeats(
-                provideTrainTopology, 
-                provideBookingReference, 
-                provideReservation, 
-                trainNumber, 
-                seatsRequestedCount);
+            var reservation = await TrainReservation.ReserveSeats(trainNumber, 
+                seatsRequestedCount, provideTrainTopology, provideBookingReference, provideReservation);
 
             Check.That(reservation)
                 .IsEqualTo(
@@ -99,7 +87,7 @@ namespace TrainTrain.Test.Acceptance
         public async Task 
             Reserve_at_least_seats_in_several_coaches()
         {
-            var bookingReference = "341RTFA";
+            var bookingReference = "341RTA";
             var trainNumber = "9043-2019-03-13";
             var seatsRequestedCount = 6;
 
@@ -113,12 +101,8 @@ namespace TrainTrain.Test.Acceptance
                     bookingReference,
                     seatsExpected.ToArray());
 
-            var reservation = await ImperativeShell.ReserveSeats(
-                provideTrainTopology, 
-                provideBookingReference, 
-                provideReservation, 
-                trainNumber, 
-                seatsRequestedCount);
+            var reservation = await TrainReservation.ReserveSeats(trainNumber, 
+                seatsRequestedCount, provideTrainTopology, provideBookingReference, provideReservation);
 
             Check.That(reservation)
                 .IsEqualTo(
@@ -144,10 +128,10 @@ namespace TrainTrain.Test.Acceptance
             return trainDataService;
         }
 
-        private static IProvideBookedSeats 
+        private static IBookSeats 
             BuildReservation(TrainId trainId, BookingReference bookingReference, params Seat[] seats)
         {
-            var trainDataService = Substitute.For<IProvideBookedSeats>();
+            var trainDataService = Substitute.For<IBookSeats>();
 
             trainDataService.BookSeats(Arg.Any<ReservationAttempt>())
                 .Returns(Task.FromResult(new Reservation(trainId, bookingReference, seats)));
@@ -155,7 +139,7 @@ namespace TrainTrain.Test.Acceptance
             return trainDataService;
         }
 
-        private (IProvideTrainTopology, IProvideBookingReference, IProvideBookedSeats) 
+        private (IProvideTrainTopology, IProvideBookingReference, IBookSeats) 
             BuildInputAdapters(string trainTopology, string trainNumber, string bookingRef, params Seat[] seats)
         {
             var trainId = new TrainId(trainNumber);

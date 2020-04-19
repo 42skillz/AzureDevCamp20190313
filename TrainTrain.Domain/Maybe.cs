@@ -4,8 +4,8 @@ namespace TrainTrain.Domain
 {
     public sealed class Maybe<T>
     {
-        internal bool HasItem { get; }
-        internal T Item { get; }
+        private bool HasItem { get; }
+        private T Item { get; }
 
         public Maybe()
         {

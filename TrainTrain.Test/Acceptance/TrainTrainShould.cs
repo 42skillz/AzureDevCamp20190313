@@ -12,13 +12,12 @@ namespace TrainTrain.Test.Acceptance
     public class TrainTrainShould
     {
         private readonly TrainId _trainId = new TrainId("9043-2019-03-13");
-        private readonly BookingReference _bookingReference = new BookingReference("341RTFA");
+        private readonly BookingReference _bookingReference = new BookingReference("341RTA");
 
         [Test]
         public async Task Reserve_seats_when_train_is_empty()
         {
             var seatsRequestedCount = new SeatsRequested(3);
-            
             var seatsExpected = new List<Seat> { new Seat("A", 1), new Seat("A", 2), new Seat("A", 3) };
 
             var provideTrainTopology = BuildTrainTopologyProvider(_trainId, TrainTopologyGenerator.With_10_available_seats());
@@ -29,6 +28,7 @@ namespace TrainTrain.Test.Acceptance
             IProvideTickets ticketsOffice = new TicketsOfficeService(provideTrainTopology, provideReservation, provideBookingReference);
 
             var seatsReservationAdapter = new ReservationAdapter(ticketsOffice);
+
             var jsonReservation =  await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count);
 
             Check.That(jsonReservation)
@@ -117,10 +117,10 @@ namespace TrainTrain.Test.Acceptance
             return trainDataService;
         }
 
-        private static IProvideBookedSeats BuildReservationProvider(TrainId trainId,
+        private static IBookSeats BuildReservationProvider(TrainId trainId,
             BookingReference bookingReference, params Seat[] seats)
         {
-            var trainDataService = Substitute.For<IProvideBookedSeats>();
+            var trainDataService = Substitute.For<IBookSeats>();
 
             trainDataService.BookSeats(Arg.Any<ReservationAttempt>())
                 .Returns(Task.FromResult(new Reservation(trainId, bookingReference, seats)));

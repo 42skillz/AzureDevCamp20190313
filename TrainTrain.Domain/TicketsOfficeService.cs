@@ -8,20 +8,20 @@ namespace TrainTrain.Domain
         // Hexagon implementation
         // ======================
 
-        private readonly IProvideBookedSeats _provideBookedSeats;
+        private readonly IBookSeats _bookSeats;
         private readonly IProvideBookingReference _provideBookingReference;
         private readonly IProvideTrainTopology _provideTrainTopology;
 
         // Hexagon constructor received all ports 
-        public TicketsOfficeService(IProvideTrainTopology provideTrainTopology, IProvideBookedSeats provideBookedSeats,
+        public TicketsOfficeService(IProvideTrainTopology provideTrainTopology, IBookSeats bookSeats,
             IProvideBookingReference provideBookingReference)
         {
             _provideTrainTopology = provideTrainTopology;
-            _provideBookedSeats = provideBookedSeats;
+            _bookSeats = bookSeats;
             _provideBookingReference = provideBookingReference;
         }
 
-        // The hexagon's design contains ports which are not "pure" by nature
+        // The hexagon's design contains ports which are not "pure" by design
         public async Task<Reservation>
             Reserve(TrainId trainId, SeatsRequested seatsRequested)
         {
@@ -32,7 +32,7 @@ namespace TrainTrain.Domain
                 var reservationAttempt = train.BuildReservationAttempt(seatsRequested);
 
                 if (reservationAttempt.IsFulFilled)
-                    return await _provideBookedSeats.BookSeats(
+                    return await _bookSeats.BookSeats(
                         reservationAttempt.AssignBookingReference(await _provideBookingReference
                             .GetBookingReference()));
             }
@@ -47,13 +47,26 @@ namespace TrainTrain.Domain
         public static Maybe<ReservationAttempt>
             TryReserve(Train train, SeatsRequested seatsRequested, BookingReference bookingReference)
         {
-            if (!train.DoesNotExceedOverallCapacity(seatsRequested)) return new Maybe<ReservationAttempt>();
+            // no async await, all stuff in train domain
+            if (!train.DoesNotExceedOverallCapacity(seatsRequested))
+            {
+                return ReservationAttemptFailure();
+            }
 
             var reservationAttempt = train.BuildReservationAttempt(seatsRequested);
 
-            return reservationAttempt.IsFulFilled
-                ? new Maybe<ReservationAttempt>(reservationAttempt.AssignBookingReference(bookingReference))
-                : new Maybe<ReservationAttempt>();
+            if (reservationAttempt.IsFulFilled)
+            {
+                return new Maybe<ReservationAttempt>(
+                    reservationAttempt.AssignBookingReference(bookingReference));
+            }
+            
+            return ReservationAttemptFailure();
+        }
+
+        private static Maybe<ReservationAttempt> ReservationAttemptFailure()
+        {
+            return new Maybe<ReservationAttempt>();
         }
     }
 }
