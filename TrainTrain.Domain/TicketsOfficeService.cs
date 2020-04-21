@@ -13,8 +13,9 @@ namespace TrainTrain.Domain
         private readonly IProvideTrainTopology _provideTrainTopology;
 
         // Hexagon constructor received all ports 
-        public TicketsOfficeService(IProvideTrainTopology provideTrainTopology, IBookSeats bookSeats,
-            IProvideBookingReference provideBookingReference)
+        public TicketsOfficeService(IProvideTrainTopology provideTrainTopology, 
+                                    IBookSeats bookSeats,
+                                    IProvideBookingReference provideBookingReference)
         {
             _provideTrainTopology = provideTrainTopology;
             _bookSeats = bookSeats;
@@ -43,11 +44,9 @@ namespace TrainTrain.Domain
         // Functional core implementation
         // ==============================
 
-        // Functional core is called by an imperative shell
         public static Maybe<ReservationAttempt>
             TryReserve(Train train, SeatsRequested seatsRequested, BookingReference bookingReference)
         {
-            // no async await, all stuff in train domain
             if (!train.DoesNotExceedOverallCapacity(seatsRequested))
             {
                 return ReservationAttemptFailure();

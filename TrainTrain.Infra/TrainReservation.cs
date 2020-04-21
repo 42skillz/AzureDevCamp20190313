@@ -8,11 +8,11 @@ namespace TrainTrain.Infra
     // Imperative Shell (mutable)
     public static class TrainReservation
     {
-        public static async Task<string> ReserveSeats(string trainNumber,
-            int seatsRequestedCount, IProvideTrainTopology provideTrainTopology,
+        public static async Task<string> ReserveSeats(string trainNumber, int seatsRequestedCount, 
+            IProvideTrainTopology provideTrainTopology,
             IProvideBookingReference provideBookingReference,
             IBookSeats bookSeats)
-        {
+        {   // Adapt from infra to domain
             var seatsRequested = new SeatsRequested(seatsRequestedCount);
             var trainId = new TrainId(trainNumber);
 

@@ -22,14 +22,14 @@ namespace TrainTrain.Test.Acceptance
 
             var provideTrainTopology = BuildTrainTopologyProvider(_trainId, TrainTopologyGenerator.With_10_available_seats());
             var provideBookingReference = BuildBookingReferenceProvider(_bookingReference);
-            var provideReservation = BuildReservationProvider(_trainId, _bookingReference, seatsExpected.ToArray());
+            var bookSeats = BuildReservationProvider(_trainId, _bookingReference, seatsExpected.ToArray());
 
             // Hexagon
-            IProvideTickets ticketsOffice = new TicketsOfficeService(provideTrainTopology, provideReservation, provideBookingReference);
+            IProvideTickets ticketsOffice = new TicketsOfficeService(provideTrainTopology, bookSeats, provideBookingReference);
 
-            var seatsReservationAdapter = new ReservationAdapter(ticketsOffice);
+            var reservationAdapter = new ReservationAdapter(ticketsOffice);
 
-            var jsonReservation =  await seatsReservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count);
+            var jsonReservation =  await reservationAdapter.ReserveAsync(_trainId.Id, seatsRequestedCount.Count);
 
             Check.That(jsonReservation)
                 .IsEqualTo(
@@ -43,10 +43,10 @@ namespace TrainTrain.Test.Acceptance
 
             var provideTrainTopology = BuildTrainTopologyProvider(_trainId, TrainTopologyGenerator.With_10_seats_and_6_already_reserved());
             var provideBookingReference = BuildBookingReferenceProvider(_bookingReference);
-            var provideReservation = BuildReservationProvider(_trainId, _bookingReference);
+            var bookSeats = BuildReservationProvider(_trainId, _bookingReference);
 
             // hexagon
-            var ticketOffice = new TicketsOfficeService(provideTrainTopology, provideReservation, provideBookingReference);
+            var ticketOffice = new TicketsOfficeService(provideTrainTopology, bookSeats, provideBookingReference);
             
             var seatsReservationAdapter = new ReservationAdapter(ticketOffice);
 
