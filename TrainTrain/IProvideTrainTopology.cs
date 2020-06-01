@@ -2,7 +2,7 @@
 
 namespace TrainTrain
 {
-    public interface ITrainDataService
+    public interface IProvideTrainTopology
     {
         Task<Train> GetTrain(string trainId);
         Task BookSeats(ReservationAttempt reservationAttempt);

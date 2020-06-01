@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TrainTrain
 {
-    public class BookingReferenceServiceAdapter : IBookingReferenceService
+    public class BookingReferenceServiceAdapter : IProvideBookingReference
     {
         private readonly string _uriBookingReferenceService;
 

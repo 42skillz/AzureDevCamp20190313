@@ -40,16 +40,16 @@ namespace TrainTrain.Test.Acceptance
                 .IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"\", \"seats\": []}}");
         }
 
-        private static IBookingReferenceService BuildBookingReferenceService(string bookingReference)
+        private static IProvideBookingReference BuildBookingReferenceService(string bookingReference)
         {
-            var bookingReferenceService = Substitute.For<IBookingReferenceService>();
+            var bookingReferenceService = Substitute.For<IProvideBookingReference>();
             bookingReferenceService.GetBookingReference().Returns(Task.FromResult(bookingReference));
             return bookingReferenceService;
         }
 
-        private static ITrainDataService BuildTrainDataService(string trainId, string trainTopology)
+        private static IProvideTrainTopology BuildTrainDataService(string trainId, string trainTopology)
         {
-            var trainDataService = Substitute.For<ITrainDataService>();
+            var trainDataService = Substitute.For<IProvideTrainTopology>();
             trainDataService.GetTrain(trainId)
                 .Returns(Task.FromResult(new Train(trainId, TrainDataServiceAdapter.AdaptTrainTopology(trainTopology))));
             return trainDataService;

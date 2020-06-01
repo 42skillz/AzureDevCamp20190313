@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace TrainTrain
 {
-    public class TrainDataServiceAdapter : ITrainDataService
+    public class TrainDataServiceAdapter : IProvideTrainTopology
     {
         private readonly string _uriTrainDataService;
 

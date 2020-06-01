@@ -6,23 +6,23 @@ namespace TrainTrain
     {
         private const string UriTrainDataService = "http://localhost:50680";
         private const string UriBookingReferenceService = "http://localhost:51691/";
-        private readonly IBookingReferenceService _bookingReferenceService;
-        private readonly ITrainDataService _trainDataService;
+        private readonly IProvideBookingReference _provideBookingReference;
+        private readonly IProvideTrainTopology _provideTrainTopology;
 
         public WebTicketManager() : this(new TrainDataServiceAdapter(UriTrainDataService),
             new BookingReferenceServiceAdapter(UriBookingReferenceService))
         {
         }
 
-        public WebTicketManager(ITrainDataService trainDataService, IBookingReferenceService bookingReferenceService)
+        public WebTicketManager(IProvideTrainTopology provideProvideTrainTopology, IProvideBookingReference provideProvideBookingReference)
         {
-            _trainDataService = trainDataService;
-            _bookingReferenceService = bookingReferenceService;
+            _provideTrainTopology = provideProvideTrainTopology;
+            _provideBookingReference = provideProvideBookingReference;
         }
 
         public async Task<Reservation> Reserve(string trainId, int seatsRequestedCount)
         {
-            var train = await _trainDataService.GetTrain(trainId);
+            var train = await _provideTrainTopology.GetTrain(trainId);
 
             if (train.DoesNotExceedOverallTrainCapacity(seatsRequestedCount))
             {
@@ -30,9 +30,9 @@ namespace TrainTrain
 
                 if (reservationAttempt.IsFulFilled)
                 {
-                    var bookingReference = await _bookingReferenceService.GetBookingReference();
+                    var bookingReference = await _provideBookingReference.GetBookingReference();
                     var assignBookingReference = reservationAttempt.AssignBookingReference(bookingReference);
-                    await _trainDataService.BookSeats(assignBookingReference);
+                    await _provideTrainTopology.BookSeats(assignBookingReference);
                     return assignBookingReference.Confirm();
                 }
             }

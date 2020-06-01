@@ -2,7 +2,7 @@
 
 namespace TrainTrain
 {
-    public interface IBookingReferenceService
+    public interface IProvideBookingReference
     {
         Task<string> GetBookingReference();
     }
