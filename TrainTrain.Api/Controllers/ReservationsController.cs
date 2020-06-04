@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TrainTrain.Api.Models;
 
 namespace TrainTrain.Api.Controllers
 {
@@ -9,11 +7,13 @@ namespace TrainTrain.Api.Controllers
     public class ReservationsController : Controller
     {
         [HttpGet]
-        public async Task<ActionResult<string>> Get([FromQuery(Name = "trainId")] string trainId,
-            [FromQuery(Name = "numberOfSeats")] int numberOfSeats)
+        public async Task<ActionResult<string>> Get(
+            [FromQuery(Name = "trainId")] string trainId,
+            [FromQuery(Name = "seatsRequestedCount")] int seatsRequestedCount)
         {
-            var manager = new TicketOfficeService();
-            return SeatsReservationAdapter.AdaptReservation(await manager.Reserve(trainId, numberOfSeats));
+            var ticketOfficeService = new TicketOfficeService();
+            return SeatsReservationAdapter
+                .AdaptReservation(await ticketOfficeService.Reserve(trainId, seatsRequestedCount));
         }
     }
 }
