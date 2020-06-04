@@ -2,19 +2,19 @@
 
 namespace TrainTrain
 {
-    public class WebTicketManager
+    public class TicketOfficeService
     {
         private const string UriTrainDataService = "http://localhost:50680";
         private const string UriBookingReferenceService = "http://localhost:51691/";
         private readonly IProvideBookingReference _provideBookingReference;
         private readonly IProvideTrainTopology _provideTrainTopology;
 
-        public WebTicketManager() : this(new TrainDataServiceAdapter(UriTrainDataService),
+        public TicketOfficeService() : this(new TrainDataServiceAdapter(UriTrainDataService),
             new BookingReferenceServiceAdapter(UriBookingReferenceService))
         {
         }
 
-        public WebTicketManager(IProvideTrainTopology provideProvideTrainTopology, IProvideBookingReference provideProvideBookingReference)
+        public TicketOfficeService(IProvideTrainTopology provideProvideTrainTopology, IProvideBookingReference provideProvideBookingReference)
         {
             _provideTrainTopology = provideProvideTrainTopology;
             _provideBookingReference = provideProvideBookingReference;

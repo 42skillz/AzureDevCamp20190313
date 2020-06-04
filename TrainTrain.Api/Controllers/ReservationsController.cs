@@ -12,7 +12,7 @@ namespace TrainTrain.Api.Controllers
         public async Task<ActionResult<string>> Get([FromQuery(Name = "trainId")] string trainId,
             [FromQuery(Name = "numberOfSeats")] int numberOfSeats)
         {
-            var manager = new WebTicketManager();
+            var manager = new TicketOfficeService();
             return SeatsReservationAdapter.AdaptReservation(await manager.Reserve(trainId, numberOfSeats));
         }
     }
