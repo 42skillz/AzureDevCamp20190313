@@ -18,8 +18,8 @@ namespace TrainTrain.Test.Acceptance
             var trainDataService = BuildTrainDataService(TrainId, TrainTopologyGenerator.With_10_available_seats());
             var bookingReferenceService = BuildBookingReferenceService(BookingReference);
 
-            var webTicketManager = new TicketOfficeService(trainDataService, bookingReferenceService);
-            var reservation = await webTicketManager.Reserve(TrainId, seatsRequestedCount);
+            var ticketOfficeService = new TicketOfficeService(trainDataService, bookingReferenceService);
+            var reservation = await ticketOfficeService.Reserve(TrainId, seatsRequestedCount);
 
             Check.That(SeatsReservationAdapter.AdaptReservation(reservation))
                 .IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", " +
