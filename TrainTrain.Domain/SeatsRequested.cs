@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Value;
 
 namespace TrainTrain.Domain
 {
-    public class SeatsRequested : ValueType<SeatsRequested>
+    public sealed record SeatsRequested
     {
         public const int MinRequested = 1;
         public const int MaxRequested = 20;
@@ -23,11 +22,6 @@ namespace TrainTrain.Domain
         public bool IsMatch(IReadOnlyCollection<Seat> seats)
         {
             return seats.Count == Count;
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] {Count};
         }
     }
 }

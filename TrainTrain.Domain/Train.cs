@@ -40,10 +40,7 @@ namespace TrainTrain.Domain
         {
             var attemptInTheSameCoach = BuildReservationAttemptInTheSameCoach(seatsRequested);
 
-            if (attemptInTheSameCoach.IsFulFilled)
-            {
-                return attemptInTheSameCoach;
-            }
+            if (attemptInTheSameCoach.IsFulFilled) return attemptInTheSameCoach;
 
             return BuildReservationAttemptForOverallTrainCapacity(seatsRequested);
         }
@@ -57,14 +54,12 @@ namespace TrainTrain.Domain
         private ReservationAttempt BuildReservationAttemptInTheSameCoach(SeatsRequested seatsRequested)
         {
             foreach (var coach in Coaches.Values)
-            {
                 if (coach.DoesNotExceedOverallCapacity(seatsRequested))
                 {
                     var reservationAttempt = coach.BuildReservationAttempt(TrainId, seatsRequested);
 
                     if (reservationAttempt.IsFulFilled) return reservationAttempt;
                 }
-            }
 
             return new ReservationAttemptFailure(TrainId, seatsRequested);
         }

@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using Value;
-
-namespace TrainTrain.Domain
+﻿namespace TrainTrain.Domain
 {
-    public class Seat : ValueType<Seat>
+    public sealed record Seat
     {
         public string CoachName { get; }
         public int SeatNumber { get; }
@@ -28,11 +25,6 @@ namespace TrainTrain.Domain
         public override string ToString()
         {
             return $"\"{SeatNumber}{CoachName}\"";
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] {CoachName, SeatNumber, BookingReference};
         }
     }
 }
