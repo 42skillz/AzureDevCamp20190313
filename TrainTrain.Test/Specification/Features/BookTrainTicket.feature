@@ -31,3 +31,8 @@ Rule: All seats for one reservation in the same coach
 		Given 2 coaches of 10 seats and 6 seats already reserved in the coach 1
 		When 2 seats are requested
 		Then the reservation should be assigned these seats "1B, 2B"
+
+	Scenario: Reservation should failed when coaches are not available
+		Given 2 coaches of 10 seats and 7 seats already reserved in the coach 1
+		When 8 seats are requested
+		Then the reservation should be failed
