@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Value;
-using Value.Shared;
 
 namespace TrainTrain.Domain
 {
-    public class Train : ValueType<Train>
+    public sealed record Train
     {
-        private readonly Dictionary<string, Coach> _coaches;
+        private readonly DictionaryValue<string, Coach> _coaches;
         private TrainId TrainId { get; }
 
-        public IReadOnlyDictionary<string, Coach> Coaches => _coaches;
+        public IReadOnlyDictionary<string, Coach> Coaches => _coaches.Item;
 
         private int NumberOfReservedSeats
         {
@@ -27,7 +25,7 @@ namespace TrainTrain.Domain
         public Train(TrainId trainId, Dictionary<string, Coach> coaches)
         {
             TrainId = trainId;
-            _coaches = coaches;
+            _coaches = new DictionaryValue<string, Coach>(coaches);
         }
 
         public bool DoesNotExceedOverallCapacity(SeatsRequested seatsRequested)
@@ -62,11 +60,6 @@ namespace TrainTrain.Domain
                 }
 
             return new ReservationAttemptFailure(TrainId, seatsRequested);
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] {TrainId, new DictionaryByValue<string, Coach>(_coaches)};
         }
     }
 }

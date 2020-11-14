@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Value;
 
 namespace TrainTrain.Domain
 {
-    public class Coach : ValueType<Coach>
+    public sealed record Coach 
     {
-        private readonly List<Seat> _seats;
-        public IReadOnlyCollection<Seat> Seats => _seats;
-        private string Name { get; }
+        private readonly ListValue<Seat> _seats;
+        public IReadOnlyCollection<Seat> Seats => _seats.Item;
+        public string Name { get; }
 
         private int NumberOfReservedSeats
         {
@@ -23,7 +22,7 @@ namespace TrainTrain.Domain
         public Coach(string name, List<Seat> seats)
         {
             Name = name;
-            _seats = seats;
+            _seats = new ListValue<Seat>(seats);
         }
 
         // DDD Pattern: Closure Of Operation
@@ -38,11 +37,6 @@ namespace TrainTrain.Domain
             return seatsRequested.IsMatch(availableSeats)
                 ? new ReservationAttempt(trainId, seatsRequested, availableSeats)
                 : new ReservationAttemptFailure(trainId, seatsRequested);
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] {Name, new ListByValue<Seat>(_seats)};
         }
 
         public bool DoesNotExceedOverallCapacity(SeatsRequested seatsRequested)
