@@ -8,7 +8,7 @@ namespace TrainTrain.Domain
     public sealed record Coach 
     {
         private readonly ListValue<Seat> _seats;
-        public IReadOnlyCollection<Seat> Seats => _seats.Item;
+        public IEnumerable<Seat> Seats => _seats.Item;
         public string Name { get; }
 
         private int NumberOfReservedSeats
@@ -20,7 +20,7 @@ namespace TrainTrain.Domain
         {
         }
 
-        public Coach(string name, List<Seat> seats)
+        public Coach(string name, IList<Seat> seats)
         {
             Name = name;
             _seats = new ListValue<Seat>(seats);
@@ -43,7 +43,7 @@ namespace TrainTrain.Domain
         public bool DoesNotExceedOverallCapacity(SeatsRequested seatsRequested)
         {
             return NumberOfReservedSeats + seatsRequested.Count <=
-                   Math.Floor(CapacityThresholdPolicy.ForCoach * Seats.Count);
+                   Math.Floor(CapacityThresholdPolicy.ForCoach * Seats.Count());
         }
     }
 }

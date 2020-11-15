@@ -6,9 +6,9 @@ namespace CollectionByValue
 {
     public class DictionaryValue<TK, TV>: ValueType<DictionaryValue<TK, TV>>
     {
-        public Dictionary<TK,TV> Item { get; }
+        public IDictionary<TK,TV> Item { get; }
 
-        public DictionaryValue(Dictionary<TK,TV> item)
+        public DictionaryValue(IDictionary<TK,TV> item)
         {
             Item = item;
         }

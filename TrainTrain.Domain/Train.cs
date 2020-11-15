@@ -10,7 +10,7 @@ namespace TrainTrain.Domain
         private readonly DictionaryValue<string, Coach> _coaches;
         private TrainId TrainId { get; }
 
-        public IReadOnlyDictionary<string, Coach> Coaches => _coaches.Item;
+        public IReadOnlyDictionary<string, Coach> Coaches => (IReadOnlyDictionary<string, Coach>)_coaches.Item;
 
         private int NumberOfReservedSeats
         {
@@ -22,8 +22,7 @@ namespace TrainTrain.Domain
             get { return Coaches.Values.SelectMany(c => c.Seats).ToList(); }
         }
 
-
-        public Train(TrainId trainId, Dictionary<string, Coach> coaches)
+        public Train(TrainId trainId, IDictionary<string, Coach> coaches)
         {
             TrainId = trainId;
             _coaches = new DictionaryValue<string, Coach>(coaches);
@@ -39,7 +38,10 @@ namespace TrainTrain.Domain
         {
             var attemptInTheSameCoach = BuildReservationAttemptInTheSameCoach(seatsRequested);
 
-            if (attemptInTheSameCoach.IsFulFilled) return attemptInTheSameCoach;
+            if (attemptInTheSameCoach.IsFulFilled)
+            {
+                return attemptInTheSameCoach;
+            }
 
             return BuildReservationAttemptForOverallTrainCapacity(seatsRequested);
         }
@@ -53,12 +55,17 @@ namespace TrainTrain.Domain
         private ReservationAttempt BuildReservationAttemptInTheSameCoach(SeatsRequested seatsRequested)
         {
             foreach (var coach in Coaches.Values)
+            {
                 if (coach.DoesNotExceedOverallCapacity(seatsRequested))
                 {
                     var reservationAttempt = coach.BuildReservationAttempt(TrainId, seatsRequested);
 
-                    if (reservationAttempt.IsFulFilled) return reservationAttempt;
+                    if (reservationAttempt.IsFulFilled)
+                    {
+                        return reservationAttempt;
+                    }
                 }
+            }
 
             return new ReservationAttemptFailure(TrainId, seatsRequested);
         }

@@ -8,11 +8,11 @@ namespace TrainTrain.Domain
     {
         private readonly ListValue<Seat> _seats;
         public TrainId TrainId { get; }
-        public IReadOnlyCollection<Seat> Seats => _seats.Item;
+        public IEnumerable<Seat> Seats => _seats.Item;
         public BookingReference BookingReference { get; }
         private SeatsRequested SeatsRequested { get; }
 
-        public bool IsFulFilled => Seats.Count == SeatsRequested.Count;
+        public bool IsFulFilled => Seats.Count() == SeatsRequested.Count;
 
         public ReservationAttempt(TrainId trainId, SeatsRequested seatsRequestedCount, IEnumerable<Seat> seats)
             : this(trainId, new BookingReference(), seatsRequestedCount, seats)
@@ -25,7 +25,7 @@ namespace TrainTrain.Domain
             TrainId = trainId;
             BookingReference = bookingReference;
             SeatsRequested = seatsRequestedCount;
-            _seats = new ListValue<Seat>(seats);
+            _seats = new ListValue<Seat>(new List<Seat>(seats));
         }
 
         // DDD Pattern: Closure Of Operation

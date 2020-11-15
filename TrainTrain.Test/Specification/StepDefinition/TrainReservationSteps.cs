@@ -107,7 +107,7 @@ namespace TrainTrain.Test.Specification.StepDefinition
             var trainDataService = Substitute.For<IProvideReservation>();
 
             trainDataService.BookSeats(Arg.Any<ReservationAttempt>())
-                .Returns(new Reservation(trainId, bookingReference, ToSeats(expectedSeats)));
+                .Returns(new Reservation(trainId, bookingReference, ToSeats(expectedSeats).ToList()));
 
             return trainDataService;
         }

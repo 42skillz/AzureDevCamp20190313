@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -53,7 +54,7 @@ namespace TrainTrain.Infra.Adapter
 
                 response.EnsureSuccessStatusCode();
 
-                return new Reservation(reservationAttempt.TrainId, reservationAttempt.BookingReference, reservationAttempt.Seats);
+                return new Reservation(reservationAttempt.TrainId, reservationAttempt.BookingReference, reservationAttempt.Seats.ToList());
             }
         }
 

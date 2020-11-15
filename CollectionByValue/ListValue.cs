@@ -5,13 +5,9 @@ namespace CollectionByValue
 {
     public class ListValue<T>: ValueType<ListValue<T>>
     {
-        public List<T> Item { get; }
+        public readonly IList<T> Item;
 
-        public ListValue(IEnumerable<T> item):this(new List<T>(item))
-        {
-        }
-
-        public ListValue(List<T> item)
+        public ListValue(IList<T> item)
         {
             Item = item;
         }

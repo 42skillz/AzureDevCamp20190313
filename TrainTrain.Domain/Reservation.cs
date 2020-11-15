@@ -14,7 +14,7 @@ namespace TrainTrain.Domain
         {
             TrainId = trainId;
             BookingReference = bookingReference;
-            _seats = new ListValue<Seat>(seats);
+            _seats = new ListValue<Seat>(new List<Seat>(seats));
         }
     }
 }
