@@ -1,26 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Value;
+using CollectionByValue;
 
 namespace TrainTrain.Domain
 {
-    public class Reservation : ValueType<Reservation>
+    public record Reservation
     {
-        private readonly List<Seat> _seats;
+        private readonly ListValue<Seat> _seats;
         public TrainId TrainId { get; }
         public BookingReference BookingReference { get; }
-        public IReadOnlyCollection<Seat> Seats => _seats;
+        public IEnumerable<Seat> Seats => _seats.Item;
 
         public Reservation(TrainId trainId, BookingReference bookingReference, IEnumerable<Seat> seats)
         {
             TrainId = trainId;
             BookingReference = bookingReference;
-            _seats = seats.ToList();
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] {TrainId, BookingReference, new ListByValue<Seat>(_seats)};
+            _seats = new ListValue<Seat>(seats);
         }
     }
 }

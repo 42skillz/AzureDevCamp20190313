@@ -79,7 +79,7 @@ namespace TrainTrain.Infra.Adapter
             // Forced to workaround with dynamic parsing since the received JSON is invalid format ;-(
             dynamic parsed = JsonConvert.DeserializeObject(trainTopology);
 
-            foreach (var token in ((Newtonsoft.Json.Linq.JContainer) parsed))
+            foreach (var token in (Newtonsoft.Json.Linq.JContainer) parsed)
             {
                 var allStuffs = ((Newtonsoft.Json.Linq.JObject) ((Newtonsoft.Json.Linq.JContainer) token).First);
 

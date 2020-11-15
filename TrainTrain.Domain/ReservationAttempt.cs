@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Value;
+using CollectionByValue;
 
 namespace TrainTrain.Domain
 {
-    public class ReservationAttempt : ValueType<ReservationAttempt>
+    public record ReservationAttempt
     {
-        private readonly List<Seat> _seats;
+        private readonly ListValue<Seat> _seats;
         public TrainId TrainId { get; }
-        public IReadOnlyCollection<Seat> Seats => _seats;
+        public IReadOnlyCollection<Seat> Seats => _seats.Item;
         public BookingReference BookingReference { get; }
         private SeatsRequested SeatsRequested { get; }
 
@@ -25,7 +25,7 @@ namespace TrainTrain.Domain
             TrainId = trainId;
             BookingReference = bookingReference;
             SeatsRequested = seatsRequestedCount;
-            _seats = seats.ToList();
+            _seats = new ListValue<Seat>(seats);
         }
 
         // DDD Pattern: Closure Of Operation
@@ -33,11 +33,6 @@ namespace TrainTrain.Domain
         {
             var assignedSeats = Seats.Select(seat => new Seat(seat.CoachName, seat.SeatNumber, BookingReference));
             return new ReservationAttempt(TrainId, bookingReference, SeatsRequested, assignedSeats);
-        }
-
-        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
-        {
-            return new object[] {TrainId, BookingReference, SeatsRequested, new ListByValue<Seat>(_seats)};
         }
     }
 }

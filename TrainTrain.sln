@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E1B58B83-F742-4146-A88C-76FA98711FA8}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,6 +17,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrainTrain.Infra", "TrainTrain.Infra\TrainTrain.Infra.csproj", "{02F93556-2E83-4BE0-AE8E-398CFCEF3770}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrainTrain.Domain", "TrainTrain.Domain\TrainTrain.Domain.csproj", "{FC61B7E8-BE8F-4DB0-9553-2CBDE13F9B79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectionByValue", "CollectionByValue\CollectionByValue.csproj", "{3E3EE7F0-25F5-4856-BA5F-DDF93DA1D9EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{FC61B7E8-BE8F-4DB0-9553-2CBDE13F9B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC61B7E8-BE8F-4DB0-9553-2CBDE13F9B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC61B7E8-BE8F-4DB0-9553-2CBDE13F9B79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E3EE7F0-25F5-4856-BA5F-DDF93DA1D9EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E3EE7F0-25F5-4856-BA5F-DDF93DA1D9EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E3EE7F0-25F5-4856-BA5F-DDF93DA1D9EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E3EE7F0-25F5-4856-BA5F-DDF93DA1D9EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

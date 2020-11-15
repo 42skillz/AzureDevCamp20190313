@@ -3,7 +3,7 @@ using TrainTrain.Domain.Port;
 
 namespace TrainTrain.Domain
 {
-    public class TicketOfficeService : IProvideTicket
+    public sealed record TicketOfficeService : IProvideTicket
     {
         private readonly IProvideBookingReference _provideBookingReference;
         private readonly IProvideReservation _provideReservation;

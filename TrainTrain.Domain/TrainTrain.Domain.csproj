@@ -10,8 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="Value" Version="1.1.0.1" />
+    <ProjectReference Include="..\CollectionByValue\CollectionByValue.csproj" />
   </ItemGroup>
 
 </Project>
