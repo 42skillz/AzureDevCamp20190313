@@ -1,13 +1,13 @@
 ﻿using System;
 using NFluent;
-using NUnit.Framework;
 using TrainTrain.Domain;
+using Xunit;
 
 namespace TrainTrain.Test.TDD.Unit
 {
-    internal class BookingReferenceShould
+    public class BookingReferenceShould
     {
-        [Test]
+        [Fact]
         public void Be_value_object()
         {
             var bookingReference = new BookingReference("AK23H");
@@ -16,7 +16,7 @@ namespace TrainTrain.Test.TDD.Unit
             Check.That(bookingReference).IsEqualTo(sameBookingReference);
         }
 
-        [Test]
+        [Fact]
         public void Raise_exception_when_id_length_is_invalid()
         {
             Check.That(BookingReference.MaxLength).IsEqualTo(7);

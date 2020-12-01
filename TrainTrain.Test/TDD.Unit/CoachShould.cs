@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using NFluent;
-using NUnit.Framework;
 using TrainTrain.Domain;
+using Xunit;
 
 namespace TrainTrain.Test.TDD.Unit
 {
-    internal class CoachShould
+    public class CoachShould
     {
-        [Test]
+        [Fact]
         public void Be_value_object()
         {
             var coach = new Coach("A", new List<Seat> {new Seat("A", 1), new Seat("A", 2)});

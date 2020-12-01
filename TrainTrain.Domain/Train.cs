@@ -9,14 +9,11 @@ namespace TrainTrain.Domain
     {
         private readonly DictionaryValue<string, Coach> _coaches;
         private TrainId TrainId { get; }
-
-        public IReadOnlyDictionary<string, Coach> Coaches => (IReadOnlyDictionary<string, Coach>)_coaches.Item;
-
+        private IReadOnlyDictionary<string, Coach> Coaches => (IReadOnlyDictionary<string, Coach>)_coaches.Item;
         private int NumberOfReservedSeats
         {
             get { return Seats.Count(s => !s.IsAvailable()); }
         }
-
         private List<Seat> Seats
         {
             get { return Coaches.Values.SelectMany(c => c.Seats).ToList(); }
@@ -42,7 +39,6 @@ namespace TrainTrain.Domain
             {
                 return attemptInTheSameCoach;
             }
-
             return BuildReservationAttemptForOverallTrainCapacity(seatsRequested);
         }
 
@@ -66,7 +62,6 @@ namespace TrainTrain.Domain
                     }
                 }
             }
-
             return new ReservationAttemptFailure(TrainId, seatsRequested);
         }
     }

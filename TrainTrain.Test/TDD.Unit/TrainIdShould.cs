@@ -1,13 +1,13 @@
 ﻿using System;
 using NFluent;
-using NUnit.Framework;
 using TrainTrain.Domain;
+using Xunit;
 
 namespace TrainTrain.Test.TDD.Unit
 {
-    internal class TrainIdShould
+    public class TrainIdShould
     {
-        [Test]
+        [Fact]
         public void Be_value_object()
         {
             const string trainIdPrimitive = "9043-2019-03-13";
@@ -19,7 +19,7 @@ namespace TrainTrain.Test.TDD.Unit
             Check.That(trainId.Date).IsEqualTo(sameTrainId.Date);
         }
 
-        [Test]
+        [Fact]
         public void Raise_exception_when_argument_is_illegal()
         {
             const string trainIdPrimitive = "express 2000";

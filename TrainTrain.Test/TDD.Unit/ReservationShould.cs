@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using NFluent;
-using NUnit.Framework;
 using TrainTrain.Domain;
+using Xunit;
 
 namespace TrainTrain.Test.TDD.Unit
 {
-    internal class ReservationShould
+    public class ReservationShould
     {
-        [Test]
+        [Fact]
         public void Be_value_object()
         {
             const string trainId = "9043-2019-03-13";

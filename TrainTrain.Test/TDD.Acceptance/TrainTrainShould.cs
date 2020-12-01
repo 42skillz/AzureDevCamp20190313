@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using NFluent;
 using NSubstitute;
-using NUnit.Framework;
 using TrainTrain.Domain;
 using TrainTrain.Domain.Port;
 using TrainTrain.Infra.Adapter;
+using Xunit;
 
 namespace TrainTrain.Test.TDD.Acceptance
 {
@@ -13,7 +13,7 @@ namespace TrainTrain.Test.TDD.Acceptance
         private readonly TrainId _trainId = new TrainId("9043-2019-03-13");
         private readonly BookingReference _bookingReference = new BookingReference("341RTFA");
 
-        [Test]
+        [Fact]
         public void Reserve_seats_when_train_is_empty()
         {
             var seatsRequestedCount = new SeatsRequested(3);
@@ -32,7 +32,7 @@ namespace TrainTrain.Test.TDD.Acceptance
                     $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
         }
 
-        [Test]
+        [Fact]
         public void Not_reserve_seats_when_it_exceed_max_capacity_threshold()
         {
             var seatsRequestedCount = new SeatsRequested(3);
@@ -50,7 +50,7 @@ namespace TrainTrain.Test.TDD.Acceptance
                 .IsEqualTo($"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"\", \"seats\": []}}");
         }
 
-        [Test]
+        [Fact]
         public void Reserve_all_seats_in_the_same_coach()
         {
             var seatsRequestedCount = new SeatsRequested(2);
@@ -70,7 +70,7 @@ namespace TrainTrain.Test.TDD.Acceptance
                     $"{{\"train_id\": \"{_trainId}\", \"booking_reference\": \"{_bookingReference}\", \"seats\": [\"1B\", \"2B\"]}}");
         }
 
-        [Test]
+        [Fact]
         public void Reserve_at_least_seats_in_several_coaches()
         {
             var seatsRequestedCount = new SeatsRequested(6);

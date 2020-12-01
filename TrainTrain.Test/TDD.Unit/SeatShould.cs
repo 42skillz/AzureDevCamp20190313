@@ -1,12 +1,12 @@
 ﻿using NFluent;
-using NUnit.Framework;
 using TrainTrain.Domain;
+using Xunit;
 
 namespace TrainTrain.Test.TDD.Unit
 {
-    internal class SeatShould
+    public class SeatShould
     {
-        [Test]
+        [Fact]
         public void Be_value_object()
         {
             var seat = new Seat("A", 1);
