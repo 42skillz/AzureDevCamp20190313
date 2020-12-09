@@ -8,7 +8,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\CollectionByValue\CollectionByValue.csproj" />
   </ItemGroup>
