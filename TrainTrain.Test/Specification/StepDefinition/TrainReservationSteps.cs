@@ -51,7 +51,7 @@ namespace TrainTrain.Test.Specification.StepDefinition
             _seatsCountRequested = seatsCountRequested;
         }
 
-        [Then(@"the reservation should be assigned these seats ""(.*)""")]
+        [Then(@"should assign the reservation these seats ""(.*)""")]
         public async Task ThenTheReservationShouldBeAssignedTheseSeats(string expectedSeats)
         {
             var bookingReferenceService = BuildBookingReferenceService(_bookingReference);
