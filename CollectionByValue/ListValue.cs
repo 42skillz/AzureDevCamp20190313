@@ -3,7 +3,7 @@ using Value;
 
 namespace CollectionByValue
 {
-    public class ListValue<T>: ValueType<ListValue<T>>
+    public class ListValue<T> : ValueType<ListValue<T>>
     {
         public readonly IList<T> Item;
 
@@ -14,7 +14,7 @@ namespace CollectionByValue
 
         protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
-            return new object[] {new ListByValue<T>(Item)};
+            return new object[] { new ListByValue<T>(Item) };
         }
     }
 }

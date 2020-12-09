@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using NFluent;
+﻿using NFluent;
+using System.Collections.Generic;
 using TrainTrain.Domain;
 using Xunit;
 
@@ -12,9 +12,9 @@ namespace TrainTrain.Test.TDD.Unit
         {
             const string trainId = "9043-2019-03-13";
             var reservation = new Reservation(new TrainId(trainId), new BookingReference("1BW80"),
-                new List<Seat> {new Seat("A", 1)});
+                new List<Seat> { new Seat("A", 1) });
             var sameReservation = new Reservation(new TrainId(trainId), new BookingReference("1BW80"),
-                new List<Seat> {new Seat("A", 1)});
+                new List<Seat> { new Seat("A", 1) });
 
             Check.That(sameReservation).IsEqualTo(reservation);
         }

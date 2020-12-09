@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CollectionByValue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CollectionByValue;
 
 namespace TrainTrain.Domain
 {

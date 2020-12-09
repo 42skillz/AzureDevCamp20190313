@@ -1,5 +1,5 @@
-﻿using System;
-using NFluent;
+﻿using NFluent;
+using System;
 using TrainTrain.Domain;
 using Xunit;
 

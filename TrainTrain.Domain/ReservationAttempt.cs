@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using CollectionByValue;
+using System.Collections.Generic;
 using System.Linq;
-using CollectionByValue;
 
 namespace TrainTrain.Domain
 {

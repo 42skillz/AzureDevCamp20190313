@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using CollectionByValue;
+﻿using CollectionByValue;
+using System.Collections.Generic;
 
 namespace TrainTrain.Domain
 {

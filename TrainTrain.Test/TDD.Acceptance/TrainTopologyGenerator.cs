@@ -27,7 +27,7 @@ namespace TrainTrain.Test.TDD.Acceptance
 
         private static char ToCoachNumber(int coachIndex)
         {
-            return (char) ('A' + coachIndex);
+            return (char)('A' + coachIndex);
         }
 
         private static string BuildFormattedLine(char coachNumber, int seatCount, ref int reserved,
@@ -37,7 +37,7 @@ namespace TrainTrain.Test.TDD.Acceptance
             for (var seatNumber = 1; seatNumber <= seatCount; seatNumber++)
             {
                 var asBookingReference = "";
-                
+
                 if (reservedCoach)
                     asBookingReference = reserved-- > 0 ? bookingReference : "";
 

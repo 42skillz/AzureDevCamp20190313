@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using NFluent;
+﻿using NFluent;
 using NSubstitute;
+using System.Threading.Tasks;
 using TrainTrain.Domain;
 using TrainTrain.Domain.Port;
 using TrainTrain.Infra.Adapter;
