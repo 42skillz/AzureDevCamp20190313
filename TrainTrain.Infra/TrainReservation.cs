@@ -19,12 +19,13 @@ namespace TrainTrain.Infra
             var train = await provideTrainTopology.GetTrain(trainId);
             var bookingReference = await provideBookingReference.GetBookingReference();
 
-            var reservation = await TicketsOfficeService
+            var reservation = TicketsOfficeService
                 // Call functional core
                 .TryReserve(train, seatsRequested, bookingReference)
                     // Call right adapter BookedSeats to book seats 
                     .Select(async reservationAttempt => await bookSeats.BookSeats(reservationAttempt))
-                        .GetValueOrFallback(Task.FromResult((Reservation) new ReservationFailure(trainId)));
+                    .Select(t => t.Result)
+                        .GetValueOrFallback(new ReservationFailure(trainId));
             
             // Adapt from domain to infra
             return ReservationAdapter.AdaptReservation(reservation);
